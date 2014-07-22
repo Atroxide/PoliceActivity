@@ -8,6 +8,12 @@ use Fetch\Server;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+/**
+ * Class to scrape Texarkana's police-activity email attachments.
+ *
+ * @package    Atroxide\PoliceActivity
+ * @author     Mark Dowdle <texasmd91@gmail.com>
+ */
 class CallScraper
 {
 
@@ -32,6 +38,11 @@ class CallScraper
 
     private $calls = array();
 
+    /**
+     * @param string               $serverPath IMAP Server port
+     * @param int                  $port       IMAP server port
+     * @param LoggerInterface|null $logger     A PSR-3 complaint logger
+     */
     public function __construct($serverPath, $port = 143, $logger = null)
     {
         if (!$logger instanceof LoggerInterface) {
@@ -44,11 +55,22 @@ class CallScraper
         $this->fetch = new Server($serverPath, $port);
     }
 
+    /**
+     * @param string $username IMAP username
+     * @param string $password IMAP password
+     *
+     */
+
     public function setAuthentication($username, $password)
     {
         $this->fetch->setAuthentication($username, $password);
     }
 
+    /**
+     * @param string $mailbox IMAP mailbox
+     *
+     * @return bool
+     */
     public function setMailBox($mailbox = '')
     {
         $success = $this->fetch->setMailBox($mailbox);
@@ -59,11 +81,21 @@ class CallScraper
         return $success;
     }
 
+    /**
+     * @param $amount Number of emails to return the unique identifiers for.
+     *
+     * @return int[] An array of email unique identifiers. May contain less than the requested amount.
+     */
     public function getMailIds($amount)
     {
         return array_slice(imap_sort($this->fetch->getImapStream(), SORTARRIVAL, 1, SE_UID), 0, (int) $amount);
     }
 
+    /**
+     * @param int[] $mailIds An array of unique identifiers.
+     *
+     * @return \Atroxide\PoliceActivity\Call[] An array of Calls.
+     */
     public function getCalls($mailIds)
     {
         $attachments = $this->getAttachments($mailIds);

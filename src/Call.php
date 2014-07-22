@@ -2,6 +2,12 @@
 
 namespace Atroxide\PoliceActivity;
 
+/**
+ * Class Call
+ *
+ * @package    Atroxide\PoliceActivity
+ * @author     Mark Dowdle <texasmd91@gmail.com>
+ */
 class Call
 {
 
@@ -16,9 +22,25 @@ class Call
     private $address;
 
     /**
-     * @param int $callType
+     * @param int $sourceType
      */
     public function __construct($sourceType)
+    {
+        $this->setSourceType($sourceType);
+    }
+
+    /**
+     * @return int
+     */
+    public function getSourceType()
+    {
+        return $this->sourceType;
+    }
+
+    /**
+     * @param int $sourceType
+     */
+    public function setSourceType($sourceType)
     {
         $this->sourceType = $sourceType;
     }
@@ -69,14 +91,6 @@ class Call
     public function setType($type)
     {
         $this->type = $type;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSourceType()
-    {
-        return $this->sourceType;
     }
 
     /**

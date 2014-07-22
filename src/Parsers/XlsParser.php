@@ -9,6 +9,13 @@ use PHPExcel_Shared_Date;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+/**
+ * Call scraper for the XLS file-format provided by Texarkana City Police.
+ *
+ * @implements ParserInterface
+ * @package    Atroxide\PoliceActivity\Parsers
+ * @author     Mark Dowdle <texasmd91@gmail.com>
+ */
 class XlsParser implements ParserInterface
 {
 

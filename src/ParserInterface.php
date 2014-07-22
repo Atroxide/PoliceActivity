@@ -2,6 +2,12 @@
 
 namespace Atroxide\PoliceActivity;
 
+/**
+ * Interface ParserInterface
+ *
+ * @package    Atroxide\PoliceActivity
+ * @author     Mark Dowdle <texasmd91@gmail.com>
+ */
 interface ParserInterface
 {
 

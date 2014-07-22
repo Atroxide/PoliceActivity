@@ -11,6 +11,13 @@ use Smalot\PdfParser\Font;
 use Smalot\PdfParser\Object;
 use Smalot\PdfParser\Page;
 
+/**
+ * Call scraper for the PDF file-format provided by Miller County Police.
+ *
+ * @implements ParserInterface
+ * @package    Atroxide\PoliceActivity\Parsers
+ * @author     Mark Dowdle <texasmd91@gmail.com>
+ */
 class PdfParser implements ParserInterface
 {
 
