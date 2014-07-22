@@ -103,7 +103,7 @@ class CallScraper
         foreach ($attachments as $mailId => $attachment) {
             /* @var $attachment Attachment */
 
-            if (isset($this->parserMap[$attachment->getMimeType()])) {
+            if ($attachment instanceof Attachment && isset($this->parserMap[$attachment->getMimeType()])) {
 
                 $fileName = $this->saveToFile($attachment->getData());
 
