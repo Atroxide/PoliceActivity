@@ -14,11 +14,19 @@ use Smalot\PdfParser\Page;
 class PdfParser implements ParserInterface
 {
 
-    public static function getCalls($fileName, $mailId, $logger = null)
+    private $logger;
+
+    public function __construct($logger = null)
     {
         if (!$logger instanceof LoggerInterface) {
             $logger = new NullLogger();
         }
+
+        $this->logger = $logger;
+    }
+
+    public function getCalls($fileName, $mailId)
+    {
 
         $parser = new \Smalot\PdfParser\Parser();
         $pdf    = $parser->parseFile($fileName);
@@ -34,7 +42,7 @@ class PdfParser implements ParserInterface
 
                 $re = "/([0-9]{1,2})\\/([0-9]{1,2})\\/([0-9]{4}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}) (AM|PM)\\t([^\\t]+)\\t([^\\t]+)\\t([^\\n]+)\\n/";
                 if (!preg_match_all($re, $text, $matches, PREG_SET_ORDER)) {
-                    $logger->error('PdfParser unsuccessful: preg_match_all returned false/null');
+                    $this->logger->error('PdfParser unsuccessful: preg_match_all returned false/null');
                     continue;
                 }
 
@@ -54,6 +62,8 @@ class PdfParser implements ParserInterface
                 }
             }
         }
+
+        $this->logger->notice('PdfParser found ' . count($calls) . ' calls from mailId ' . $mailId);
 
         return $calls;
     }

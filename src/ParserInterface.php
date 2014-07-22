@@ -5,5 +5,7 @@ namespace Atroxide\PoliceActivity;
 interface ParserInterface
 {
 
-    public static function getCalls($fileName, $mailId, $logger);
+    public function __construct($logger);
+
+    public function getCalls($fileName, $mailId);
 }

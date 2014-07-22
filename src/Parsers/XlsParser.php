@@ -12,11 +12,19 @@ use Psr\Log\NullLogger;
 class XlsParser implements ParserInterface
 {
 
-    public static function getCalls($fileName, $mailId, $logger = null)
+    private $logger;
+
+    public function __construct($logger = null)
     {
         if (!$logger instanceof LoggerInterface) {
             $logger = new NullLogger();
         }
+
+        $this->logger = $logger;
+    }
+
+    public function getCalls($fileName, $mailId)
+    {
 
         $objPHPExcel = PHPExcel_IOFactory::load($fileName);
         $sheetData   = $objPHPExcel->getActiveSheet()->toArray(null, true, false, false);
@@ -33,6 +41,8 @@ class XlsParser implements ParserInterface
             $call->setAddress($row[7]);
             $calls[] = $call;
         }
+
+        $this->logger->notice('XlsParser found ' . count($calls) . ' calls from mailId ' . $mailId);
 
         return $calls;
     }

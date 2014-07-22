@@ -76,10 +76,12 @@ class CallScraper
                 $fileName = $this->saveToFile($attachment->getData());
 
                 /* @var $parser ParserInterface */
-                $parser = $this->parserNS . '\\' . $this->parserMap[$attachment->getMimeType()];
+                $parserName = $this->parserNS . '\\' . $this->parserMap[$attachment->getMimeType()];
 
-                $c = $parser::getCalls($fileName, $mailId, $this->logger);
-                $this->calls = array_merge($this->calls, $c);
+                $parser = new $parserName($this->logger);
+                $calls  = $parser->getCalls($fileName, $mailId);
+
+                $this->calls = array_merge($this->calls, $calls);
 
                 $this->deleteFile($fileName);
             } else {
