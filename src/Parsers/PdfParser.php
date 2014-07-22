@@ -70,7 +70,7 @@ class PdfParser implements ParserInterface
             }
         }
 
-        $this->logger->notice('PdfParser found ' . count($calls) . ' calls from mailId ' . $mailId);
+        $this->logger->info('PdfParser found ' . count($calls) . ' calls from mailId ' . $mailId);
 
         return $calls;
     }

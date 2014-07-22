@@ -49,7 +49,7 @@ class XlsParser implements ParserInterface
             $calls[] = $call;
         }
 
-        $this->logger->notice('XlsParser found ' . count($calls) . ' calls from mailId ' . $mailId);
+        $this->logger->info('XlsParser found ' . count($calls) . ' calls from mailId ' . $mailId);
 
         return $calls;
     }

@@ -123,7 +123,7 @@ class CallScraper
             }
         }
 
-        $this->logger->notice('Scraper returned  ' . count($this->calls) . ' calls total.');
+        $this->logger->info('Scraper returned  ' . count($this->calls) . ' calls total.');
 
         return $this->calls;
     }
