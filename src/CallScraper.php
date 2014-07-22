@@ -103,22 +103,30 @@ class CallScraper
         foreach ($attachments as $mailId => $attachment) {
             /* @var $attachment Attachment */
 
-            if ($attachment instanceof Attachment && isset($this->parserMap[$attachment->getMimeType()])) {
+            if ($attachment instanceof Attachment) {
 
-                $fileName = $this->saveToFile($attachment->getData());
+                if (isset($this->parserMap[$attachment->getMimeType()])) {
 
-                /* @var $parser ParserInterface */
-                $parserName = $this->parserNS . '\\' . $this->parserMap[$attachment->getMimeType()];
+                    $fileName = $this->saveToFile($attachment->getData());
 
-                $parser = new $parserName($this->logger);
-                $calls  = $parser->getCalls($fileName, $mailId);
+                    /* @var $parser ParserInterface */
+                    $parserName = $this->parserNS . '\\' . $this->parserMap[$attachment->getMimeType()];
 
-                $this->calls = array_merge($this->calls, $calls);
+                    $parser = new $parserName($this->logger);
+                    $calls  = $parser->getCalls($fileName, $mailId);
 
-                $this->deleteFile($fileName);
+                    $this->calls = array_merge($this->calls, $calls);
+
+                    $this->deleteFile($fileName);
+                } else {
+                    $this->logger->warning(
+                        'Attachment mimetype \'' . $attachment->getMimeType() . '\' not located in $parserMap'
+                    );
+                }
             } else {
                 $this->logger->warning(
-                    'Attachment mimetype \'' . $attachment->getMimeType() . '\' not located in $parserMap'
+                    'Unknown non-Attachment object in attachment artray',
+                    array('mailId' => $mailId, 'attachment' => $attachment)
                 );
             }
         }
