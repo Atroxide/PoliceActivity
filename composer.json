@@ -1,0 +1,24 @@
+{
+    "name": "atroxide/police-activity",
+    "type": "library",
+    "description": "Library for scraping police activity email attachments.",
+    "authors": [
+        {
+            "name": "Mark Dowdle",
+            "email": "texasmd91@gmail.com",
+            "homepage": "http://markdowdle.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "monolog/monolog": "1.10.*",
+        "tedivm/fetch": "0.5.*",
+        "phpoffice/phpexcel": "1.8.*",
+        "smalot/pdfparser": "0.9.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Atroxide\\PoliceActivity\\": ["src/"]
+        }
+    }
+}
