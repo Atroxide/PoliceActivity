@@ -6,6 +6,7 @@ use Fetch\Attachment;
 use Fetch\Message;
 use Fetch\Server;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class CallScraper
 {
@@ -31,10 +32,14 @@ class CallScraper
 
     private $calls = array();
 
-    public function __construct($serverPath, $port = 143, LoggerInterface $logger)
+    public function __construct($serverPath, $port = 143, $logger = null)
     {
+        if (!$logger instanceof LoggerInterface) {
+            $logger = new NullLogger();
+        }
+
         $this->logger = $logger;
-        $this->logger->info("Scraper initialized");
+        $this->logger->info("Scraper intiialized");
 
         $this->fetch = new Server($serverPath, $port);
     }
@@ -67,7 +72,6 @@ class CallScraper
             /* @var $attachment Attachment */
 
             if (isset($this->parserMap[$attachment->getMimeType()])) {
-
 
                 $fileName = $this->saveToFile($attachment->getData());
 

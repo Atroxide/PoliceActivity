@@ -6,14 +6,17 @@ use Atroxide\PoliceActivity\Call;
 use Atroxide\PoliceActivity\ParserInterface;
 use PHPExcel_IOFactory;
 use PHPExcel_Shared_Date;
-
-require dirname(dirname(__dir__)) . '\vendor\autoload.php';
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class XlsParser implements ParserInterface
 {
 
-    public static function getCalls($fileName, $mailId, $logger)
+    public static function getCalls($fileName, $mailId, $logger = null)
     {
+        if (!$logger instanceof LoggerInterface) {
+            $logger = new NullLogger();
+        }
 
         $objPHPExcel = PHPExcel_IOFactory::load($fileName);
         $sheetData   = $objPHPExcel->getActiveSheet()->toArray(null, true, false, false);

@@ -4,6 +4,8 @@ namespace Atroxide\PoliceActivity\Parsers;
 
 use Atroxide\PoliceActivity\Call;
 use Atroxide\PoliceActivity\ParserInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Smalot\PdfParser\Document;
 use Smalot\PdfParser\Font;
 use Smalot\PdfParser\Object;
@@ -12,8 +14,12 @@ use Smalot\PdfParser\Page;
 class PdfParser implements ParserInterface
 {
 
-    public static function getCalls($fileName, $mailId, $logger)
+    public static function getCalls($fileName, $mailId, $logger = null)
     {
+        if (!$logger instanceof LoggerInterface) {
+            $logger = new NullLogger();
+        }
+
         $parser = new \Smalot\PdfParser\Parser();
         $pdf    = $parser->parseFile($fileName);
 
@@ -113,6 +119,7 @@ class PdfParser implements ParserInterface
                     case "'":
                     case 'Tj':
                         $command[Object::COMMAND] = array($command);
+                    // no break
                     case 'TJ':
                         // Skip if not previously defined, should never happened.
                         if (is_null($current_font)) {
