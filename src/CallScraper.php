@@ -125,7 +125,7 @@ class CallScraper
                 }
             } else {
                 $this->logger->warning(
-                    'Unknown non-Attachment object in attachment artray',
+                    'Unknown non-Attachment object in attachment array',
                     array('mailId' => $mailId, 'attachment' => $attachment)
                 );
             }
