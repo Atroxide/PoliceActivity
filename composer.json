@@ -1,7 +1,7 @@
 {
     "name": "atroxide/police-activity",
     "type": "library",
-    "description": "Library for scraping police activity email attachments.",
+    "description": "Library for scraping Texarkana's police-activity email attachments.",
     "authors": [
         {
             "name": "Mark Dowdle",
