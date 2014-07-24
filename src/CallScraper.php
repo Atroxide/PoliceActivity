@@ -115,7 +115,9 @@ class CallScraper
                     $parser = new $parserName($this->logger);
                     $calls  = $parser->getCalls($fileName, $mailId);
 
-                    $this->calls = array_merge($this->calls, $calls);
+                    if ($calls !== false) {
+                        $this->calls = array_merge($this->calls, $calls);
+                    }
 
                     $this->deleteFile($fileName);
                 } else {

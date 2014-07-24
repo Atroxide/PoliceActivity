@@ -36,43 +36,53 @@ class PdfParser implements ParserInterface
     {
 
         $parser = new \Smalot\PdfParser\Parser();
-        $pdf    = $parser->parseFile($fileName);
+        try {
 
-        $objects = $pdf->getObjects();
+            $pdf = $parser->parseFile($fileName);
 
-        $calls = array();
-        foreach ($objects as $object) {
-            /* @var $object Object */
-            //echo 'Content: ' . $object->getContent() . '<br />';
-            $text = self::getText($object, null, $pdf);
-            if (strlen(trim($text)) > 0) {
+            $objects = $pdf->getObjects();
 
-                $re = "/([0-9]{1,2})\\/([0-9]{1,2})\\/([0-9]{4}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}) (AM|PM)\\t([^\\t]+)\\t([^\\t]+)\\t([^\\n]+)\\n/";
-                if (!preg_match_all($re, $text, $matches, PREG_SET_ORDER)) {
-                    $this->logger->error('PdfParser unsuccessful: preg_match_all returned false/null');
-                    continue;
-                }
+            $calls = array();
+            foreach ($objects as $object) {
+                /* @var $object Object */
+                //echo 'Content: ' . $object->getContent() . '<br />';
+                $text = self::getText($object, null, $pdf);
+                if (strlen(trim($text)) > 0) {
 
-                foreach ($matches as $match) {
-                    $call = new Call(Call::PDF);
+                    $re = "/([0-9]{1,2})\\/([0-9]{1,2})\\/([0-9]{4}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}) (AM|PM)\\t([^\\t]+)\\t([^\\t]+)\\t([^\\n]+)\\n/";
+                    if (!preg_match_all($re, $text, $matches, PREG_SET_ORDER)) {
+                        $this->logger->error('PdfParser unsuccessful: preg_match_all returned false/null');
+                        continue;
+                    }
 
-                    $date = new \DateTime();
-                    $date->setDate($match[3], $match[1], $match[2]);
-                    $date->setTime(($match[7] == 'PM' ? $match[4] + 12 : $match[4]), $match[5], $match[6]);
-                    $call->setTime($date);
+                    foreach ($matches as $match) {
+                        $call = new Call(Call::PDF);
 
-                    $call->setMailId($mailId);
-                    $call->setAgency('MILLER COUNTY');
-                    $call->setType($match[9]);
-                    $call->setAddress($match[10]);
-                    $calls[] = $call;
+                        $date = new \DateTime();
+                        $date->setDate($match[3], $match[1], $match[2]);
+                        $date->setTime(($match[7] == 'PM' ? $match[4] + 12 : $match[4]), $match[5], $match[6]);
+                        $call->setTime($date);
+
+                        $call->setMailId($mailId);
+                        $call->setAgency('MILLER COUNTY');
+                        $call->setType($match[9]);
+                        $call->setAddress($match[10]);
+                        $calls[] = $call;
+                    }
                 }
             }
+
+            $this->logger->info('PdfParser found ' . count($calls) . ' calls from mailId ' . $mailId);
+
+            return $calls;
+        } catch (\Exception $e) {
+            $this->logger->error(
+                'PdfParser exception from mailId ' . $mailId . ': ' . $e->getMessage(),
+                (array) $e
+            );
+
+            return false;
         }
-
-        $this->logger->info('PdfParser found ' . count($calls) . ' calls from mailId ' . $mailId);
-
-        return $calls;
     }
 
     public static function getText(Object $object, Page $page = null, Document $pdf)
