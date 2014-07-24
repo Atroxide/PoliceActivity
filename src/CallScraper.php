@@ -119,9 +119,7 @@ class CallScraper
 
                     $this->deleteFile($fileName);
                 } else {
-                    $this->logger->warning(
-                        'Attachment mimetype \'' . $attachment->getMimeType() . '\' not located in $parserMap'
-                    );
+                    $this->logger->warning('Unknown type of attachment found. mimeType: ' . $attachment->getMimeType());
                 }
             } else {
                 $this->logger->warning(
@@ -162,7 +160,7 @@ class CallScraper
             /* @var $message Message */
             $attachment = $message->getAttachments();
 
-            if (isset($attachment) && count($attachment >= 1)) {
+            if (isset($attachment) && $attachment !== false) {
                 $attachments[$message->getUid()] = $attachment[0];
 
                 if (count($attachment) > 1) {
