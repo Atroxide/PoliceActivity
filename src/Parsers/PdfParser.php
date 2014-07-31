@@ -58,11 +58,10 @@ class PdfParser implements ParserInterface
                     foreach ($matches as $match) {
                         $call = new Call(Call::PDF);
 
-                        $date = new \DateTime();
-                        $date->setDate($match[3], $match[1], $match[2]);
-                        $date->setTime(($match[7] == 'PM' ? $match[4] + 12 : $match[4]), $match[5], $match[6]);
-                        $call->setTime($date);
+                        $timestamp = $match[3] . '-' . $match[1] . '-' . $match[2] . ' ' . $match[4] . ':' . $match[5] . ':' . $match[6] . ' ' . $match[7];
+                        $date      = \DateTime::createFromFormat('Y-n-j h:i:s A', $timestamp);
 
+                        $call->setTime($date);
                         $call->setMailId($mailId);
                         $call->setAgency('MILLER COUNTY');
                         $call->setType($match[9]);
@@ -77,8 +76,7 @@ class PdfParser implements ParserInterface
             return $calls;
         } catch (\Exception $e) {
             $this->logger->error(
-                'PdfParser exception from mailId ' . $mailId . ': ' . $e->getMessage(),
-                (array) $e
+                'PdfParser exception from mailId ' . $mailId . ': ' . $e->getMessage(), (array) $e
             );
 
             return false;
