@@ -36,11 +36,14 @@ class XlsParser implements ParserInterface
 
             $calls = array();
             foreach (array_splice($sheetData, 3, -1) as $row) {
+
                 $call = new Call(Call::XLS);
 
-                $call->setTime(
-                    new \DateTime(date('Y-m-d', \PHPExcel_Shared_Date::ExcelToPHP($row[0])) . ' ' . $row[3])
-                );
+                $date  = \PHPExcel_Shared_Date::ExcelToPHPObject($row[0]);
+                $times = explode(':', $row[3]);
+                $date->setTime($times[0], $times[1], $times[2]);
+
+                $call->setTime($date);
                 $call->setMailId($mailId);
                 $call->setAgency($row[4]);
                 $call->setType($row[5]);
@@ -54,8 +57,7 @@ class XlsParser implements ParserInterface
             return $calls;
         } catch (\PHPExcel_Reader_Exception $e) {
             $this->logger->error(
-                'XlsParser exception from mailId ' . $mailId . ': ' . $e->getMessage(),
-                (array) $e
+                'XlsParser exception from mailId ' . $mailId . ': ' . $e->getMessage(), (array) $e
             );
 
             return false;
